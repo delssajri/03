@@ -1,1 +1,1 @@
-include ':app', ':p0031FirstProject', ':p0041basicviews', ':p0041basicviews', ':p0051LayoutFiles'
+include ':app', ':p0031FirstProject', ':p0041basicviews', ':p0041basicviews', ':p0051LayoutFiles', ':p0051LayoutFiles'
