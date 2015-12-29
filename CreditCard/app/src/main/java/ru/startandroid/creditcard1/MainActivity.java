@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                                          @Override
                                          public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                                              if (eText.getText().length() < 1) {
-                                                 eText.setBackground(getResources().getDrawable(R.drawable.font));
+                                                 eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.visa, 0, 0, 0);
                                              }
                                          }
 
