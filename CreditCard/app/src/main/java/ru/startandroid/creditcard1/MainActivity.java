@@ -38,11 +38,24 @@ public class MainActivity extends AppCompatActivity {
                                          public void afterTextChanged(Editable s) {
                                              // Прописываем то, что надо выполнить после изменения текста
                                             Editable txt = eText.getText();
-                                            if (eText.getText().length() < 1) {
-                                                eText.setBackground(getResources().getDrawable(R.drawable.font));
-                                            }
+                                            String txtt = txt.toString();
+                                            //char myChar = txtt.charAt(0);
 
-                                             if (eText.getText().length() == 4 || eText.getText().length() == 9 || eText.getText().length() == 14) {
+
+                                            if (txtt.length() >=  1) {
+                                                char myChar = txtt.charAt(0);
+                                                if (myChar == '5')
+                                                eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.vis, 0, 0, 0);
+                                                else if (myChar == '4')
+                                                    eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mcard, 0, 0, 0);
+                                                else
+                                                    eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dol, 0, 0, 0);
+                                            }
+                                            else
+                                                eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dol, 0, 0, 0);
+
+
+                                            if (txtt.length() == 4 || txtt.length() == 9 || txtt.length() == 14) {
 
                                                  eText.setText(eText.getText() + " ");
                                                  eText.setSelection(eText.getText().length());
@@ -51,9 +64,7 @@ public class MainActivity extends AppCompatActivity {
                                          }
                                          @Override
                                          public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                                             if (eText.getText().length() < 1) {
-                                                 eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.visa, 0, 0, 0);
-                                             }
+
                                          }
 
                                          @Override

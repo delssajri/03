@@ -21,6 +21,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="131dp"
         android:inputType="none"
+        android:drawableLeft="@drawable/dol"
         />
 
     <Button
