@@ -9,7 +9,7 @@
     android:paddingRight="64dp"
     android:paddingTop="64dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="ru.startandroid.creditcard1.MainActivity"
+    tools:context="ru.startandroid.creditcard.MainActivity"
     >
 
     <EditText
@@ -20,9 +20,8 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="131dp"
-        android:inputType="none"
         android:drawableLeft="@drawable/dol"
-        />
+        android:inputType="number" />
 
     <Button
         android:layout_width="wrap_content"
@@ -33,4 +32,11 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="123dp"
         android:onClick="onClick" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:id="@+id/textView"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

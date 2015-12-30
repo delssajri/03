@@ -1,4 +1,4 @@
-package ru.startandroid.creditcard1;
+package ru.startandroid.creditcard;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

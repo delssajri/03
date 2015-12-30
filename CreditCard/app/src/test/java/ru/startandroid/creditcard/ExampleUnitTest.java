@@ -1,4 +1,4 @@
-package ru.startandroid.creditcard1;
+package ru.startandroid.creditcard;
 
 import org.junit.Test;
 
