@@ -107,7 +107,7 @@ class Payment {
         return CardType.unknown;
     }
 }
-class  PaymentView {
+class PaymentView {
     private Payment payment;
     public PaymentView (Payment payment){
         this.payment = payment;
@@ -187,6 +187,20 @@ class DateView extends PaymentView {
 class CvvView extends PaymentView {
     public CvvView(Payment payment){
         super(payment);
+    }
+}
+class PaymentForm {
+    private Payment payment;
+    private NumberView numberView;
+    private DateView dateView;
+    private CvvView cvvView;
+    private PaymentView currentView;
+    public PaymentForm(){
+        payment = new Payment();
+        numberView = new NumberView(payment);
+        dateView = new DateView(payment);
+        cvvView = new CvvView(payment);
+        currentView = numberView;
     }
 }
 public class JavaMain {
