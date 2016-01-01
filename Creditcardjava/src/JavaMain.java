@@ -10,7 +10,14 @@ class WrongDateException extends Exception {
         super(message);
     }
 }
+class IncompleteNumberException extends Exception {
+    public IncompleteNumberException() {}
 
+    public IncompleteNumberException(String message)
+    {
+        super(message);
+    }
+}
 class WrongNumberException extends Exception {
     public WrongNumberException() {}
 
@@ -68,8 +75,24 @@ class Payment {
     public String GetNumber(){
         return number;
     }
-    public void SetNumber(String number){
+    public void SetNumber(String number) throws WrongNumberException, IncompleteNumberException {
         this.number = number;
+        CheckNumber();
+    }
+    public  void CheckNumber() throws WrongNumberException, IncompleteNumberException {
+        if (number.length() < 16)
+            throw new IncompleteNumberException();
+        int sum = 0;
+        for (int i = 0; i < number.length(); i++){
+           int r = number.charAt(i) - '0';
+           if (i % 2 == 0)
+               r *= 2;
+           if (r > 9)
+               r = (r / 10) + (r % 10);
+           sum += r;
+        }
+        if (sum % 10 != 0)
+            throw new WrongNumberException();
     }
     public CardType GetCardType (){
         if (number.length() == 0){
@@ -118,7 +141,7 @@ class NumberView extends PaymentView {
 
     public void SetText (String text) {
     }
-    public void OnUserInput (String text, int pos) throws WrongNumberException {
+    public void OnUserInput (String text, int pos) throws WrongNumberException, IncompleteNumberException {
         String original_text = super.GetPayment().GetNumber();
         if (16 <= original_text.length()) {
             throw new WrongNumberException();
@@ -132,7 +155,7 @@ class NumberView extends PaymentView {
         }
         super.GetPayment().SetNumber(updated_text);
     }
-    public void OnDelete (int pos, int direction){
+    public void OnDelete (int pos, int direction) throws WrongNumberException, IncompleteNumberException {
         String original_text = super.GetPayment().GetNumber();
         if (0 == original_text.length()) {
             return;
@@ -184,8 +207,11 @@ public class JavaMain {
         try {
             numberView.OnUserInput(digit, -1);
         } catch (WrongNumberException e) {
-            e.printStackTrace();
+            System.out.println("Wrong number");
+        } catch (IncompleteNumberException e) {
+            System.out.println("Incomplete number");
         }
+
         System.out.println(digit + ": <" + numberView.GetText() + ">, icon: " + numberView.GetCardIcon());
     }
 }
