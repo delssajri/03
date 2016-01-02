@@ -2,6 +2,14 @@
  * Created by Tatiana on 01.01.2016.
  */
 
+class IncompleteDateException extends Exception {
+    public IncompleteDateException() {}
+
+    public IncompleteDateException(String message)
+    {
+        super(message);
+    }
+}
 class WrongDateException extends Exception {
     public WrongDateException() {}
 
@@ -34,34 +42,52 @@ enum CardIcon {
 }
 class ExpirationDate {
     public ExpirationDate () {
-        month = -1;
-        year = -1;
+        month = "";
+        year = "";
     }
-    public ExpirationDate (int month, int year) {
+    public ExpirationDate (String month, String year) {
         this.month = month;
         this.year = year;
     }
-    private int month;
-    private int year;
-    public int GetMonth() {
+    private String month;
+    private String year;
+    public String GetMonth() {
         return month;
     }
-    public void SetMonth(int month) throws WrongDateException {
+    private void SetMonth(String month) {
         this.month = month;
-        if (month > 12 || month < 1) {
-            throw new WrongDateException();
-        }
     }
-    public int GetYear() {
+    public String GetYear() {
         return year;
     }
-    public void SetYear(int year) throws WrongDateException {
+    private void SetYear(String year) {
         this.year = year;
-        if (year > 99 || year < 0) {
+    }
+    public void SetDate(String monthYear) throws IncompleteDateException, WrongDateException{
+        String month = "";
+        String year = "";
+        if (monthYear.length() > 0) {
+            month = monthYear.substring(0, Integer.min(monthYear.length(), 2));
+        }
+        if (monthYear.length() > 2) {
+            year = monthYear.substring(2, Integer.min(monthYear.length(), 4));
+        }
+        SetYear(year);
+        SetMonth(month);
+        CheckDate();
+    }
+    private void CheckDate() throws IncompleteDateException, WrongDateException {
+        if (year.length() < 2 || month.length() < 2)
+            throw new IncompleteDateException();
+        int y = Integer.parseInt(year, 10);
+        if (y > 99 || y < 0) {
+            throw new WrongDateException();
+        }
+        int m = Integer.parseInt(month, 10);
+        if ( m > 12 || m < 1) {
             throw new WrongDateException();
         }
     }
-
 }
 class Payment {
     private String number;
@@ -106,6 +132,12 @@ class Payment {
         }
         return CardType.unknown;
     }
+    public ExpirationDate GetExpirationDate (){
+        return new ExpirationDate(expiration.GetMonth(), expiration.GetYear());
+    }
+    public void SetExpirationDate (String monthYear) throws IncompleteDateException, WrongDateException {
+        expiration.SetDate(monthYear);
+    }
 }
 class PaymentView {
     private Payment payment;
@@ -118,7 +150,7 @@ class PaymentView {
     public String GetText(){
         return null;
     }
-    public void OnUserInput (String text, int pos) throws WrongNumberException, IncompleteNumberException {
+    public void OnUserInput (String text, int pos) throws WrongNumberException, IncompleteNumberException, WrongDateException, IncompleteDateException {
 
     }
     public void OnDelete (int pos, int direction) throws WrongNumberException, IncompleteNumberException {
@@ -195,6 +227,49 @@ class DateView extends PaymentView {
     public DateView(Payment payment){
         super(payment);
     }
+    public String GetText(){
+        String number = super.GetPayment().GetNumber();
+        String lastDigits = "<font color=\"black\">" + number.substring(12) + "</font>";
+        ExpirationDate expirationDate = super.GetPayment().GetExpirationDate();
+        String month = "font color=\"gray\">MM</font>";
+        String year = "font color=\"gray\">/YY</font>";
+        String cvv = "</font> <font color=\"gray\"> CVV</font>";
+        if (expirationDate.GetMonth().length() > 0) {
+            month = "font color=\"black\">" + expirationDate.GetMonth() + "</font>";
+        }
+        if (expirationDate.GetYear().length() > 0) {
+            year = "font color=\"black\">/" + expirationDate.GetYear() + "</font>";
+        }
+        return lastDigits + month + year + cvv;
+
+    }
+    public void OnUserInput (String text, int pos) throws WrongDateException, IncompleteDateException {
+        ExpirationDate expirationDate = super.GetPayment().GetExpirationDate();
+        String original_text = expirationDate.GetMonth() + expirationDate.GetYear();
+        if (4 <= original_text.length()) {
+            throw new WrongDateException();
+        }
+
+        String updated_text;
+        if (pos < 0) {
+            updated_text = original_text + text;
+        } else {
+            updated_text = original_text.substring(0, pos) + text + original_text.substring(pos);
+        }
+        super.GetPayment().SetExpirationDate(updated_text);
+    }
+    public void OnDelete (int pos, int direction) throws WrongNumberException, IncompleteNumberException {
+
+    }
+    public CardIcon GetCardIcon (){
+        CardType cardType = super.GetPayment().GetCardType();
+        if (cardType == CardType.visa)
+                return CardIcon.visafront;
+        if (cardType == CardType.mastercard){
+            return CardIcon.mastercardfront;
+        }
+        return CardIcon.unknown;
+    }
 }
 class CvvView extends PaymentView {
     public CvvView(Payment payment){
@@ -203,28 +278,32 @@ class CvvView extends PaymentView {
 }
 class PaymentForm {
     private Payment payment;
+    private PaymentView[] views;
     private NumberView numberView;
     private DateView dateView;
     private CvvView cvvView;
-    private PaymentView currentView;
+    private int currentView;
     public PaymentForm(){
         payment = new Payment();
-        numberView = new NumberView(payment);
-        dateView = new DateView(payment);
-        cvvView = new CvvView(payment);
-        currentView = numberView;
+        views = new PaymentView[3];
+        views[0] = new NumberView(payment);
+        views[1] = new DateView(payment);
+        views[2] = new CvvView(payment);
+        currentView = 0;
     }
     public String GetText(){
-        return currentView.GetText();
+        return views[currentView].GetText();
     }
-    public void OnUserInput (String text, int pos) throws WrongNumberException, IncompleteNumberException {
-        currentView.OnUserInput(text, pos);
+    public void OnUserInput (String text, int pos) throws WrongNumberException, IncompleteNumberException, WrongDateException, IncompleteDateException {
+        views[currentView].OnUserInput(text, pos);
+        if ( currentView < 2)
+            currentView += 1;
     }
     public void OnDelete (int pos, int direction) throws WrongNumberException, IncompleteNumberException {
-        currentView.OnDelete(pos, direction);
+        views[currentView].OnDelete(pos, direction);
     }
     public CardIcon GetCardIcon (){
-        return currentView.GetCardIcon();
+        return views[currentView].GetCardIcon();
     }
 
 }
@@ -235,7 +314,7 @@ public class JavaMain {
     }
     private static void TestNumber() {
         PaymentForm paymentForm = new PaymentForm();
-        String cardNumber = "4276380023676948";
+        String cardNumber = "42763800236769481234";
         System.out.println("initial:" + paymentForm.GetText() + "icon: " + paymentForm.GetCardIcon());
         for (int i = 0; i < cardNumber.length(); i++){
             TestOneDigit(paymentForm, "" + cardNumber.charAt(i));
@@ -248,6 +327,10 @@ public class JavaMain {
             System.out.println("Wrong number");
         } catch (IncompleteNumberException e) {
             System.out.println("Incomplete number");
+        }catch (WrongDateException e) {
+            System.out.println("Wrong date");
+        } catch (IncompleteDateException e) {
+            System.out.println("Incomplete date");
         }
 
         System.out.println(digit + ": <" + paymentForm.GetText() + ">, icon: " + paymentForm.GetCardIcon());
