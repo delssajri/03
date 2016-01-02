@@ -138,6 +138,17 @@ class Payment {
     public void SetExpirationDate (String monthYear) throws IncompleteDateException, WrongDateException {
         expiration.SetDate(monthYear);
     }
+    public String GetCvv(){
+        return cvv;
+    }
+    public void SetCvv(String cvv) throws WrongNumberException, IncompleteNumberException {
+        this.cvv = cvv;
+        CheckCvv();
+    }
+    public  void CheckCvv() throws WrongNumberException, IncompleteNumberException {
+        if (number.length() < 3)
+            throw new IncompleteNumberException();
+    }
 }
 class PaymentView {
     private Payment payment;
@@ -183,7 +194,6 @@ class NumberView extends PaymentView {
             otext += " ";
         return otext;
     }
-
 
     public void OnUserInput (String text, int pos) throws WrongNumberException, IncompleteNumberException {
         String original_text = super.GetPayment().GetNumber();
@@ -275,6 +285,39 @@ class CvvView extends PaymentView {
     public CvvView(Payment payment){
         super(payment);
     }
+    public String GetText(){
+        String number = super.GetPayment().GetNumber();
+        String lastDigits = "<font color=\"black\">" + number.substring(12) + "</font>";
+        ExpirationDate expirationDate = super.GetPayment().GetExpirationDate();
+        String month = "font color=\"black\">" + expirationDate.GetMonth() + "</font>";
+        String year = "font color=\"black\">/" + expirationDate.GetYear() + "</font>";
+        String cvv = "</font> <font color=\"gray\"> CVV</font>";
+        if (super.GetPayment().GetCvv().length() > 0) {
+            cvv = "font color=\"black\">" + super.GetPayment().GetCvv() + "</font>";
+        }
+        return lastDigits + month + year + cvv;
+
+    }
+    public void OnUserInput (String text, int pos) throws WrongNumberException, IncompleteNumberException {
+        String original_text = super.GetPayment().GetCvv();
+        if (3 <= original_text.length()) {
+            throw new WrongNumberException();
+        }
+
+        String updated_text;
+        if (pos < 0) {
+            updated_text = original_text + text;
+        } else {
+            updated_text = original_text.substring(0, pos) + text + original_text.substring(pos);
+        }
+        super.GetPayment().SetCvv(updated_text);
+    }
+    public void OnDelete (int pos, int direction) throws WrongNumberException, IncompleteNumberException {
+
+    }
+    public CardIcon GetCardIcon (){
+        return CardIcon.back;
+    }
 }
 class PaymentForm {
     private Payment payment;
@@ -310,11 +353,10 @@ class PaymentForm {
 public class JavaMain {
     public static void main (String[] args){
         TestNumber();
-
     }
     private static void TestNumber() {
         PaymentForm paymentForm = new PaymentForm();
-        String cardNumber = "42763800236769481234";
+        String cardNumber = "42763800236769481234567";
         System.out.println("initial:" + paymentForm.GetText() + "icon: " + paymentForm.GetCardIcon());
         for (int i = 0; i < cardNumber.length(); i++){
             TestOneDigit(paymentForm, "" + cardNumber.charAt(i));
