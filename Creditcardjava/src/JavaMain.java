@@ -115,6 +115,19 @@ class PaymentView {
     public Payment GetPayment (){
         return payment;
     }
+    public String GetText(){
+        return null;
+    }
+    public void OnUserInput (String text, int pos) throws WrongNumberException, IncompleteNumberException {
+
+    }
+    public void OnDelete (int pos, int direction) throws WrongNumberException, IncompleteNumberException {
+
+    }
+    public CardIcon GetCardIcon (){
+        return CardIcon.unknown;
+    }
+
 }
 class NumberView extends PaymentView {
     public NumberView(Payment payment){
@@ -136,11 +149,10 @@ class NumberView extends PaymentView {
         }
         if (text.length() > 0 && text.length() % 4 == 0)
             otext += " ";
-            return otext;
-        }
-
-    public void SetText (String text) {
+        return otext;
     }
+
+
     public void OnUserInput (String text, int pos) throws WrongNumberException, IncompleteNumberException {
         String original_text = super.GetPayment().GetNumber();
         if (16 <= original_text.length()) {
@@ -202,6 +214,19 @@ class PaymentForm {
         cvvView = new CvvView(payment);
         currentView = numberView;
     }
+    public String GetText(){
+        return currentView.GetText();
+    }
+    public void OnUserInput (String text, int pos) throws WrongNumberException, IncompleteNumberException {
+        currentView.OnUserInput(text, pos);
+    }
+    public void OnDelete (int pos, int direction) throws WrongNumberException, IncompleteNumberException {
+        currentView.OnDelete(pos, direction);
+    }
+    public CardIcon GetCardIcon (){
+        return currentView.GetCardIcon();
+    }
+
 }
 public class JavaMain {
     public static void main (String[] args){
@@ -209,23 +234,22 @@ public class JavaMain {
 
     }
     private static void TestNumber() {
-        Payment payment = new Payment();
-        NumberView numberView = new NumberView(payment);
+        PaymentForm paymentForm = new PaymentForm();
         String cardNumber = "4276380023676948";
-        System.out.println("initial:" + numberView.GetText() + "icon: " + numberView.GetCardIcon());
+        System.out.println("initial:" + paymentForm.GetText() + "icon: " + paymentForm.GetCardIcon());
         for (int i = 0; i < cardNumber.length(); i++){
-            TestOneDigit(numberView, "" + cardNumber.charAt(i));
+            TestOneDigit(paymentForm, "" + cardNumber.charAt(i));
         }
     }
-    private static void TestOneDigit(NumberView numberView, String digit){
+    private static void TestOneDigit(PaymentForm paymentForm, String digit){
         try {
-            numberView.OnUserInput(digit, -1);
+            paymentForm.OnUserInput(digit, -1);
         } catch (WrongNumberException e) {
             System.out.println("Wrong number");
         } catch (IncompleteNumberException e) {
             System.out.println("Incomplete number");
         }
 
-        System.out.println(digit + ": <" + numberView.GetText() + ">, icon: " + numberView.GetCardIcon());
+        System.out.println(digit + ": <" + paymentForm.GetText() + ">, icon: " + paymentForm.GetCardIcon());
     }
 }
