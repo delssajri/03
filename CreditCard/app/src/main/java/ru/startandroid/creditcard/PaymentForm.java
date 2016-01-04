@@ -225,14 +225,14 @@ class DateView extends PaymentView {
         String number = super.GetPayment().GetNumber();
         String lastDigits = "<font color=\"black\">" + number.substring(12) + "</font>";
         ExpirationDate expirationDate = super.GetPayment().GetExpirationDate();
-        String month = "font color=\"gray\">MM</font>";
-        String year = "font color=\"gray\">/YY</font>";
-        String cvv = "</font> <font color=\"gray\"> CVV</font>";
+        String month = "<font color=\"gray\">MM</font>";
+        String year = "<font color=\"gray\">/YY</font>";
+        String cvv = "<font color=\"gray\"> CVV</font>";
         if (expirationDate.GetMonth().length() > 0) {
-            month = "font color=\"black\">" + expirationDate.GetMonth() + "</font>";
+            month = "<font color=\"black\">" + expirationDate.GetMonth() + "</font>";
         }
         if (expirationDate.GetYear().length() > 0) {
-            year = "font color=\"black\">/" + expirationDate.GetYear() + "</font>";
+            year = "<font color=\"black\">/" + expirationDate.GetYear() + "</font>";
         }
         return lastDigits + month + year + cvv;
 
@@ -273,11 +273,11 @@ class CvvView extends PaymentView {
         String number = super.GetPayment().GetNumber();
         String lastDigits = "<font color=\"black\">" + number.substring(12) + "</font>";
         ExpirationDate expirationDate = super.GetPayment().GetExpirationDate();
-        String month = "font color=\"black\">" + expirationDate.GetMonth() + "</font>";
-        String year = "font color=\"black\">/" + expirationDate.GetYear() + "</font>";
-        String cvv = "</font> <font color=\"gray\"> CVV</font>";
+        String month = "<font color=\"black\">" + expirationDate.GetMonth() + "</font>";
+        String year = "<font color=\"black\">/" + expirationDate.GetYear() + "</font>";
+        String cvv = "<font color=\"gray\"> CVV</font>";
         if (super.GetPayment().GetCvv().length() > 0) {
-            cvv = "font color=\"black\">" + super.GetPayment().GetCvv() + "</font>";
+            cvv = "<font color=\"black\">" + super.GetPayment().GetCvv() + "</font>";
         }
         return lastDigits + month + year + cvv;
 
