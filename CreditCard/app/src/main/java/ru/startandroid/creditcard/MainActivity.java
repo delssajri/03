@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.text.method.KeyListener;
 import android.view.KeyEvent;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.text.Html;
@@ -18,6 +20,7 @@ import ru.startandroid.creditcard.R;
 
 public class MainActivity extends AppCompatActivity {
     PaymentForm paymentForm;
+    Animation shake;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         paymentForm = new PaymentForm();
         final EditText eText = (EditText)findViewById(R.id.eText);
         final TextView textView = (TextView)findViewById(R.id.textView);
+        shake = AnimationUtils.loadAnimation(this, R.anim.shake);
 
         eText.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -59,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 try {
                     paymentForm.OnUserInput(s, -1);
+                } catch (WrongPaymentException e) {
+                    eText.startAnimation(shake);
                 } catch (Exception e) {
                 }
                 EditText eText = (EditText)findViewById(R.id.eText);
