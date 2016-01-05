@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+        //UpdatePaymentView();
         UpdateButtons();
     }
     private  void UpdatePaymentView(){

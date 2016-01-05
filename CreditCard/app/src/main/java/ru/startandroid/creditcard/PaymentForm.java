@@ -168,13 +168,16 @@ class NumberView extends PaymentView {
     public NumberView(Payment payment){
         super(payment);
     }
-    public  int GetCursorPos(){
+    public int GetCursorPos(){
+        String text = super.GetPayment().GetNumber();
+        if (text.length() == 0)
+            return 0;
         return GetText().length();
     }
     public String GetText(){
         String text = super.GetPayment().GetNumber();
         if (text.length() == 0){
-            return text;
+            return "<font color=\"gray\">XXXX XXXX XXXX XXXX</font>";
         }
         String otext = "";
         for (int i = 0; i < text.length(); i++) {
@@ -232,25 +235,32 @@ class DateView extends PaymentView {
     public  int GetCursorPos(){
         ExpirationDate expirationDate = super.GetPayment().GetExpirationDate();
         if (expirationDate.GetMonth().length() == 1) {
-            return 4+1;
+            return 8+1;
         }
         if (expirationDate.GetMonth().length() == 2) {
-            return 4+3+expirationDate.GetYear().length();
+            return 8+3+expirationDate.GetYear().length();
         }
-        return 4;
+        return 8;
     }
     public String GetText(){
         String number = super.GetPayment().GetNumber();
-        String lastDigits = "<font color=\"black\">" + number.substring(12) + "</font>";
+        String lastDigits = "<font color=\"gray\">XXXX</font>&nbsp;&nbsp;&nbsp;&nbsp;";
         ExpirationDate expirationDate = super.GetPayment().GetExpirationDate();
         String month = "<font color=\"gray\">MM</font>";
         String year = "<font color=\"gray\">/YY</font>";
-        String cvv = "<font color=\"gray\"> CVV</font>";
+        String cvv = "<font color=\"gray\">CVV</font>";
+        if (number.length() == 16){
+            lastDigits = "<font color=\"black\">" + number.substring(12) + "</font>&nbsp;&nbsp;&nbsp;&nbsp;";
+        }
         if (expirationDate.GetMonth().length() > 0) {
             month = "<font color=\"black\">" + expirationDate.GetMonth() + "</font>";
         }
         if (expirationDate.GetYear().length() > 0) {
             year = "<font color=\"black\">/" + expirationDate.GetYear() + "</font>";
+        }
+        year += "&nbsp;&nbsp;&nbsp;&nbsp;";
+        if (super.GetPayment().GetCvv().length() > 0) {
+            cvv = "<font color=\"black\">" + super.GetPayment().GetCvv() + "</font>";
         }
         return lastDigits + month + year + cvv;
 
@@ -288,15 +298,18 @@ class CvvView extends PaymentView {
         super(payment);
     }
     public  int GetCursorPos() {
-        return 4 + (2 + 1 + 2) + super.GetPayment().GetCvv().length();
+        return 8 + (2 + 1 + 2) + 4 + super.GetPayment().GetCvv().length();
     }
     public String GetText(){
         String number = super.GetPayment().GetNumber();
-        String lastDigits = "<font color=\"black\">" + number.substring(12) + "</font>";
+        String lastDigits = "<font color=\"gray\">XXXX</font>&nbsp;&nbsp;&nbsp;&nbsp;";
         ExpirationDate expirationDate = super.GetPayment().GetExpirationDate();
         String month = "<font color=\"black\">" + expirationDate.GetMonth() + "</font>";
-        String year = "<font color=\"black\">/" + expirationDate.GetYear() + "</font>";
-        String cvv = "<font color=\"gray\"> CVV</font>";
+        String year = "<font color=\"black\">/" + expirationDate.GetYear() + "</font>&nbsp;&nbsp;&nbsp;&nbsp;";
+        String cvv = "<font color=\"gray\">CVV</font>";
+        if (number.length() == 16){
+            lastDigits = "<font color=\"black\">" + number.substring(12) + "</font>&nbsp;&nbsp;&nbsp;&nbsp;";
+        }
         if (super.GetPayment().GetCvv().length() > 0) {
             cvv = "<font color=\"black\">" + super.GetPayment().GetCvv() + "</font>";
         }
