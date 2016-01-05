@@ -10,6 +10,7 @@ import android.text.method.KeyListener;
 import android.view.KeyEvent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.text.Html;
@@ -29,17 +30,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         paymentForm = new PaymentForm();
         final EditText eText = (EditText)findViewById(R.id.eText);
-        final TextView textView = (TextView)findViewById(R.id.textView);
+        Button btnPrev = (Button)findViewById(R.id.btnPrev);
+        Button btnNext = (Button)findViewById(R.id.btnNext);
+        Button btnDone = (Button)findViewById(R.id.btnDone);
         shake = AnimationUtils.loadAnimation(this, R.anim.shake);
 
         eText.setOnKeyListener(new View.OnKeyListener() {
@@ -69,28 +64,56 @@ public class MainActivity extends AppCompatActivity {
                     eText.startAnimation(shake);
                 } catch (Exception e) {
                 }
-                EditText eText = (EditText)findViewById(R.id.eText);
-                Spanned formattedString = Html.fromHtml(paymentForm.GetText());
-                eText.setText(formattedString);
-                eText.setSelection(paymentForm.GetCursorPos());
-
-                switch (paymentForm.GetCardIcon()){
-                    case visafront:
-                        eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.vis, 0, 0, 0);
-                        break;
-                    case mastercardfront:
-                        eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mcard, 0, 0, 0);
-                        break;
-                    case back:
-                        eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dol, 0, 0, 0);
-                        break;
-                    default:
-                        eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dol, 0, 0, 0);
-                }
+                UpdatePaymentView();
+                UpdateButtons();
                 return true;
             }
         });
+        UpdateButtons();
+    }
+    private  void UpdatePaymentView(){
+        EditText eText = (EditText)findViewById(R.id.eText);
+        Spanned formattedString = Html.fromHtml(paymentForm.GetText());
+        eText.setText(formattedString);
+        eText.setSelection(paymentForm.GetCursorPos());
 
+        switch (paymentForm.GetCardIcon()){
+            case visafront:
+                eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.vis, 0, 0, 0);
+                break;
+            case mastercardfront:
+                eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mcard, 0, 0, 0);
+                break;
+            case back:
+                eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dol, 0, 0, 0);
+                break;
+            default:
+                eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dol, 0, 0, 0);
+        }
+    }
+    private  void UpdateButtons()
+    {
+        Button btnPrev = (Button)findViewById(R.id.btnPrev);
+        Button btnNext = (Button)findViewById(R.id.btnNext);
+        Button btnDone = (Button)findViewById(R.id.btnDone);
+        btnPrev.setEnabled(paymentForm.GetPrevEnabled());
+        btnNext.setEnabled(paymentForm.GetNextEnabled());
+        btnDone.setEnabled(paymentForm.GetPayment().Valid());
+    }
+
+    public void onClickDone(View view) {
+    }
+
+    public void onClickNext(View view) {
+        paymentForm.Next();
+        UpdatePaymentView();
+        UpdateButtons();
+    }
+
+    public void onClickPrev(View view) {
+        paymentForm.Prev();
+        UpdatePaymentView();
+        UpdateButtons();
     }
 }
 

@@ -55,7 +55,7 @@ class ExpirationDate {
         SetMonth(month);
         CheckDate();
     }
-    private void CheckDate() throws IncompletePaymentException, WrongPaymentException {
+    public void CheckDate() throws IncompletePaymentException, WrongPaymentException {
         if (year.length() < 2 || month.length() < 2)
             throw new IncompletePaymentException();
         int y = Integer.parseInt(year, 10);
@@ -127,6 +127,16 @@ class Payment {
     public  void CheckCvv() throws WrongPaymentException, IncompletePaymentException {
         if (number.length() < 3)
             throw new IncompletePaymentException();
+    }
+    public boolean Valid(){
+        try {
+            CheckNumber();
+            expiration.CheckDate();
+            CheckCvv();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }
 class PaymentView {
@@ -224,11 +234,8 @@ class DateView extends PaymentView {
         if (expirationDate.GetMonth().length() == 1) {
             return 4+1;
         }
-        if (expirationDate.GetMonth().length() == 2 && expirationDate.GetYear().length() == 0) {
-            return 4+3;
-        }
-        if (expirationDate.GetMonth().length() == 2 && expirationDate.GetYear().length() == 1) {
-            return 4+4;
+        if (expirationDate.GetMonth().length() == 2) {
+            return 4+3+expirationDate.GetYear().length();
         }
         return 4;
     }
@@ -347,7 +354,27 @@ public class PaymentForm {
         return views[currentView].GetCardIcon();
     }
 
-    public Payment GetPaymement() {
+    public Payment GetPayment() {
         return payment;
+    }
+    public boolean GetPrevEnabled(){
+        if (currentView > 0)
+            return true;
+        return false;
+    }
+    public boolean GetNextEnabled(){
+        if (currentView < views.length - 1)
+            return true;
+        return false;
+    }
+    public void Next(){
+        if (currentView < views.length - 1) {
+            currentView += 1;
+        }
+    }
+    public void Prev(){
+        if (currentView > 0) {
+            currentView -= 1;
+        }
     }
 }
