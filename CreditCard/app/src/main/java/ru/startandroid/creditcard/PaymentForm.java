@@ -103,10 +103,10 @@ class Payment {
         if (number.length() == 0){
             return CardType.unknown;
         }
-        if (number.charAt(0) == '4'){
+        if (number.charAt(0) == '5'){
             return CardType.mastercard;
         }
-        if (number.charAt(0) == '5'){
+        if (number.charAt(0) == '4'){
             return CardType.visa;
         }
         return CardType.unknown;

@@ -70,6 +70,20 @@ public class MainActivity extends AppCompatActivity {
                 EditText eText = (EditText)findViewById(R.id.eText);
                 Spanned formattedString = Html.fromHtml(paymentForm.GetText());
                 eText.setText(formattedString);
+
+                switch (paymentForm.GetCardIcon()){
+                    case visafront:
+                        eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.vis, 0, 0, 0);
+                        break;
+                    case mastercardfront:
+                        eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mcard, 0, 0, 0);
+                        break;
+                    case back:
+                        eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dol, 0, 0, 0);
+                        break;
+                    default:
+                        eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dol, 0, 0, 0);
+                }
                 return true;
             }
         });
