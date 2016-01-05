@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
                     case 15: s = "8"; break;
                     case 16: s = "9"; break;
                 }
+                int currentCursorPos = eText.getSelectionStart();
+
                 try {
                     paymentForm.OnUserInput(s, -1);
                 } catch (WrongPaymentException e) {
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 EditText eText = (EditText)findViewById(R.id.eText);
                 Spanned formattedString = Html.fromHtml(paymentForm.GetText());
                 eText.setText(formattedString);
+                eText.setSelection(paymentForm.GetCursorPos());
 
                 switch (paymentForm.GetCardIcon()){
                     case visafront:

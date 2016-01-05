@@ -137,6 +137,9 @@ class PaymentView {
     public Payment GetPayment (){
         return payment;
     }
+    public  int GetCursorPos() {
+        return 0;
+    }
     public String GetText(){
         return null;
     }
@@ -156,7 +159,7 @@ class NumberView extends PaymentView {
         super(payment);
     }
     public  int GetCursorPos(){
-        return  0;
+        return GetText().length();
     }
     public String GetText(){
         String text = super.GetPayment().GetNumber();
@@ -216,6 +219,19 @@ class DateView extends PaymentView {
     public DateView(Payment payment){
         super(payment);
     }
+    public  int GetCursorPos(){
+        ExpirationDate expirationDate = super.GetPayment().GetExpirationDate();
+        if (expirationDate.GetMonth().length() == 1) {
+            return 4+1;
+        }
+        if (expirationDate.GetMonth().length() == 2 && expirationDate.GetYear().length() == 0) {
+            return 4+3;
+        }
+        if (expirationDate.GetMonth().length() == 2 && expirationDate.GetYear().length() == 1) {
+            return 4+4;
+        }
+        return 4;
+    }
     public String GetText(){
         String number = super.GetPayment().GetNumber();
         String lastDigits = "<font color=\"black\">" + number.substring(12) + "</font>";
@@ -264,6 +280,9 @@ class CvvView extends PaymentView {
     public CvvView(Payment payment){
         super(payment);
     }
+    public  int GetCursorPos() {
+        return 4 + (2 + 1 + 2) + super.GetPayment().GetCvv().length();
+    }
     public String GetText(){
         String number = super.GetPayment().GetNumber();
         String lastDigits = "<font color=\"black\">" + number.substring(12) + "</font>";
@@ -309,6 +328,9 @@ public class PaymentForm {
         views[1] = new DateView(payment);
         views[2] = new CvvView(payment);
         currentView = 0;
+    }
+    public  int GetCursorPos() {
+        return views[currentView].GetCursorPos();
     }
     public String GetText(){
         return views[currentView].GetText();
