@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.text.method.KeyListener;
 import android.view.KeyEvent;
@@ -15,6 +16,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.text.Html;
 import android.text.Spanned;
+import de.tavendo.autobahn.WebSocketConnection;
+import de.tavendo.autobahn.WebSocketException;
+import de.tavendo.autobahn.WebSocketHandler;
 
 
 import ru.startandroid.creditcard.R;
@@ -103,6 +107,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickDone(View view) {
+        final String TAG = "de.tavendo.test1";
+        final WebSocketConnection mConnection = new WebSocketConnection();
+        final String wsuri = "ws://farm:8888/websocket";
+
+        try {
+            mConnection.connect(wsuri, new WebSocketHandler() {
+
+                @Override
+                public void onOpen() {
+                    Log.d(TAG, "Status: Connected to " + wsuri);
+                    mConnection.sendTextMessage("{\"action\": \"placeOrder\", \"payment\": {\"owner\": \"Tanya\", \"cvv\": \"123\", \"expiresAt\": \"1217\", \"number\": \"4042692503974178\"}}");
+                }
+
+                @Override
+                public void onTextMessage(String payload) {
+                    Log.d(TAG, "Got echo: " + payload);
+                }
+
+                @Override
+                public void onClose(int code, String reason) {
+                    Log.d(TAG, "Connection lost.");
+                }
+            });
+        } catch (WebSocketException e) {
+
+            Log.d(TAG, e.toString());
+        }
     }
 
     public void onClickNext(View view) {
