@@ -4,7 +4,12 @@
 
 package ru.startandroid.creditcard;
 
+import java.io.IOException;
 import java.lang.Math;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
 
 class IncompletePaymentException extends Exception {
     public IncompletePaymentException() {}
@@ -337,6 +342,16 @@ class CvvView extends PaymentView {
         return CardIcon.back;
     }
 }
+class PaymentInfo {
+    public String owner;
+    public String number;
+    public String expiresAt;
+    public String cvv;
+}
+class PaymentRequest {
+    public String action;
+    public PaymentInfo payment;
+}
 public class PaymentForm {
     private Payment payment;
     private PaymentView[] views;
@@ -389,5 +404,17 @@ public class PaymentForm {
         if (currentView > 0) {
             currentView -= 1;
         }
+    }
+    public String GetPaymentRequest() throws IOException {
+        PaymentRequest paymentRequest = new PaymentRequest();
+        paymentRequest.action = "placeOrder";
+        paymentRequest.payment = new PaymentInfo();
+        paymentRequest.payment.owner = "Tanya";
+        paymentRequest.payment.number = GetPayment().GetNumber();
+        ExpirationDate expirationDate = GetPayment().GetExpirationDate();
+        paymentRequest.payment.expiresAt = expirationDate.GetMonth() + expirationDate.GetYear();
+        paymentRequest.payment.cvv = GetPayment().GetCvv();
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        return ow.writeValueAsString(paymentRequest);
     }
 }
