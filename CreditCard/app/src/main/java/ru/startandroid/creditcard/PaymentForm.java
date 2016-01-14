@@ -130,7 +130,7 @@ class Payment {
         CheckCvv();
     }
     public  void CheckCvv() throws WrongPaymentException, IncompletePaymentException {
-        if (number.length() < 3)
+        if (cvv.length() < 3)
             throw new IncompletePaymentException();
     }
     public boolean Valid(){
