@@ -16,10 +16,12 @@
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:id="@+id/eText"
-        android:drawableLeft="@drawable/dol"
+        android:drawableLeft="@drawable/unknown"
         android:inputType="number"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" />
 
     <RelativeLayout
         android:layout_width="match_parent"

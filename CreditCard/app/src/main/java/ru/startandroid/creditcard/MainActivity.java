@@ -2,6 +2,7 @@ package ru.startandroid.creditcard;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -113,18 +114,19 @@ public class MainActivity extends AppCompatActivity {
         eText.setText(formattedString);
         eText.setSelection(Math.min(paymentForm.GetCursorPos(), eText.getText().toString().length()));
 
+        eText.setCompoundDrawablePadding(20);
         switch (paymentForm.GetCardIcon()){
             case visafront:
-                eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.vis, 0, 0, 0);
+                eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.visa, 0, 0, 0);
                 break;
             case mastercardfront:
                 eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mcard, 0, 0, 0);
                 break;
             case back:
-                eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dol, 0, 0, 0);
+                eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.card_back, 0, 0, 0);
                 break;
             default:
-                eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dol, 0, 0, 0);
+                eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.unknown, 0, 0, 0);
         }
     }
     private  void UpdateButtons()
