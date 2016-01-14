@@ -104,14 +104,14 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-        //UpdatePaymentView();
+        UpdatePaymentView();
         UpdateButtons();
     }
     private  void UpdatePaymentView(){
         EditText eText = (EditText)findViewById(R.id.eText);
         Spanned formattedString = Html.fromHtml(paymentForm.GetText());
         eText.setText(formattedString);
-        eText.setSelection(paymentForm.GetCursorPos());
+        eText.setSelection(Math.min(paymentForm.GetCursorPos(), eText.getText().toString().length()));
 
         switch (paymentForm.GetCardIcon()){
             case visafront:
