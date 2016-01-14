@@ -167,7 +167,15 @@ class PaymentView {
     public CardIcon GetCardIcon (){
         return CardIcon.unknown;
     }
-
+    protected String PadWithSpaces(String s, int fieldWidth) {
+        if (s.length() >= fieldWidth) {
+            return s;
+        }
+        for (int i = s.length(); i < fieldWidth; i++) {
+            s += "&nbsp;";
+        }
+        return s;
+    }
 }
 class NumberView extends PaymentView {
     public NumberView(Payment payment){
@@ -256,6 +264,8 @@ class DateView extends PaymentView {
         String cvv = "<font color=\"gray\">CVV</font>";
         if (number.length() == 16){
             lastDigits = "<font color=\"black\">" + number.substring(12) + "</font>&nbsp;&nbsp;&nbsp;&nbsp;";
+        } else if (number.length() > 12) {
+            lastDigits = "<font color=\"red\">" + PadWithSpaces(number.substring(12), 4) + "</font>&nbsp;&nbsp;&nbsp;&nbsp;";
         }
         if (expirationDate.GetMonth().length() > 0) {
             month = "<font color=\"black\">" + expirationDate.GetMonth() + "</font>";
@@ -309,15 +319,25 @@ class CvvView extends PaymentView {
         String number = super.GetPayment().GetNumber();
         String lastDigits = "<font color=\"gray\">XXXX</font>&nbsp;&nbsp;&nbsp;&nbsp;";
         ExpirationDate expirationDate = super.GetPayment().GetExpirationDate();
-        String month = "<font color=\"black\">" + expirationDate.GetMonth() + "</font>";
-        String year = "<font color=\"black\">/" + expirationDate.GetYear() + "</font>&nbsp;&nbsp;&nbsp;&nbsp;";
+        String month = "<font color=\"gray\">MM</font>";
+        String year = "<font color=\"gray\">/YY</font>";
         String cvv = "<font color=\"gray\">CVV</font>";
         if (number.length() == 16){
             lastDigits = "<font color=\"black\">" + number.substring(12) + "</font>&nbsp;&nbsp;&nbsp;&nbsp;";
+        } else if (number.length() > 12) {
+            lastDigits = "<font color=\"red\">" + PadWithSpaces(number.substring(12), 4) + "</font>&nbsp;&nbsp;&nbsp;&nbsp;";
         }
+        if (expirationDate.GetMonth().length() > 0) {
+            month = "<font color=\"black\">" + expirationDate.GetMonth() + "</font>";
+        }
+        if (expirationDate.GetYear().length() > 0) {
+            year = "<font color=\"black\">/" + expirationDate.GetYear() + "</font>";
+        }
+        year += "&nbsp;&nbsp;&nbsp;&nbsp;";
         if (super.GetPayment().GetCvv().length() > 0) {
             cvv = "<font color=\"black\">" + super.GetPayment().GetCvv() + "</font>";
         }
+
         return lastDigits + month + year + cvv;
 
     }
