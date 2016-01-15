@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.text.method.KeyListener;
@@ -56,9 +57,19 @@ public class MainActivity extends AppCompatActivity {
         eText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() != KeyEvent.ACTION_UP)
+                if ( event.getAction() != KeyEvent.ACTION_UP && keyCode != 67) {
                     return true;
-                android.util.Log.v("CreditCard", Integer.toString(keyCode));
+                } else if(event.getUnicodeChar() ==
+                        (int)EditableAccomodatingLatinIMETypeNullIssues.ONE_UNPROCESSED_CHARACTER.charAt(0))
+                {
+                    //We are ignoring this character, and we want everyone else to ignore it, too, so
+                    // we return true indicating that we have handled it (by ignoring it).
+                    return true;
+                }
+                android.util.Log.v("CreditCard", Integer.toString(keyCode) + " " + Integer.toString(event.getAction()));
+                if((keyCode < KeyEvent.KEYCODE_0) || (keyCode > KeyEvent.KEYCODE_9)) {
+                    return true;
+                }
                 String s = "";
                 switch (keyCode) {
                     case 7:

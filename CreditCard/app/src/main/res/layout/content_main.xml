@@ -11,7 +11,7 @@
     tools:context="ru.startandroid.creditcard.MainActivity"
     android:paddingBottom="60dp">
 
-    <EditText
+    <ru.startandroid.creditcard.CreditEditText
         android:background="@drawable/edittextstyle"
         android:layout_width="match_parent"
         android:layout_height="30dp"
