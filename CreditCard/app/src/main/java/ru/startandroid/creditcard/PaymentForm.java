@@ -77,10 +77,12 @@ class Payment {
     private String number;
     private String cvv;
     private ExpirationDate expiration;
+    private boolean confirmed;
     public Payment(){
         number = "";
         cvv = "";
         expiration = new ExpirationDate();
+        confirmed = false;
     }
     public String GetNumber(){
         return number;
@@ -142,6 +144,12 @@ class Payment {
             return false;
         }
         return true;
+    }
+    public boolean GetConfirmed (){
+        return confirmed;
+    }
+    public void Confirm () {
+        confirmed = true;
     }
 }
 class PaymentView {

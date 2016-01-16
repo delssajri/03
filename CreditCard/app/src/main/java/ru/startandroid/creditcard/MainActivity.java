@@ -147,9 +147,17 @@ public class MainActivity extends AppCompatActivity {
         Button btnPrev = (Button)findViewById(R.id.btnPrev);
         Button btnNext = (Button)findViewById(R.id.btnNext);
         Button btnDone = (Button)findViewById(R.id.btnDone);
-        btnPrev.setEnabled(paymentForm.GetPrevEnabled());
-        btnNext.setEnabled(paymentForm.GetNextEnabled());
-        btnDone.setEnabled(paymentForm.GetPayment().Valid());
+        if (paymentForm.GetPayment().GetConfirmed()) {
+            btnPrev.setEnabled(false);
+            btnNext.setEnabled(false);
+            btnDone.setEnabled(false);
+        }
+        else {
+            btnPrev.setEnabled(paymentForm.GetPrevEnabled());
+            btnNext.setEnabled(paymentForm.GetNextEnabled());
+            btnDone.setEnabled(paymentForm.GetPayment().Valid());
+        }
+
     }
 
     public void onClickDone(View view) {
@@ -183,16 +191,14 @@ public class MainActivity extends AppCompatActivity {
                 public void onTextMessage(String payload) {
                     ObjectMapper mapper = new ObjectMapper();
                     Log.d(TAG, "Got echo: " + payload);
-                    Button btnPrev = (Button)findViewById(R.id.btnPrev);
-                    Button btnNext = (Button)findViewById(R.id.btnNext);
                     Button btnDone = (Button)findViewById(R.id.btnDone);
-                    btnPrev.setEnabled(paymentForm.GetPrevEnabled());
-                    btnNext.setEnabled(paymentForm.GetNextEnabled());
-                    btnDone.setEnabled(paymentForm.GetPayment().Valid());
+                    CreditEditText eText = (CreditEditText)findViewById(R.id.eText);
                     try {
                         SrvResponse srvResponse = mapper.readValue(payload, SrvResponse.class);
                         if (srvResponse.status >= 200 && srvResponse.status < 300) {
                             btnDone.setText("Confirmed");
+                            eText.setEnabled(false);
+                            paymentForm.GetPayment().Confirm();
                         }
                         else {
                             String caption = "";
@@ -204,7 +210,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                             ShowError(caption, "Server responded with error " + Integer.toString(srvResponse.status) + " " + srvResponse.reason);
                             btnDone.setText("Retry");
-                            UpdateButtons();
                         }
                     } catch (JsonParseException e) {
                         ShowError("Server error","Server responded with wrong answer. Press retry to send request again");
@@ -219,12 +224,16 @@ public class MainActivity extends AppCompatActivity {
                         UpdateButtons();
                         btnDone.setText("Retry");
                     }
-
+                    UpdateButtons();
                 }
 
                 @Override
                 public void onClose(int code, String reason) {
+                    Button btnDone = (Button)findViewById(R.id.btnDone);
                     Log.d(TAG, "Connection lost.");
+                    UpdateButtons();
+                    ShowError("Server unavailable", "Couldn't establish connection with server. Check your network connections and retry");
+                    btnDone.setText("Retry");
                 }
             });
         } catch (WebSocketException e) {
