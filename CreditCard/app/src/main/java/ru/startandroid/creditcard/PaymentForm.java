@@ -198,7 +198,7 @@ class NumberView extends PaymentView {
     public String GetText(){
         String text = super.GetPayment().GetNumber();
         if (text.length() == 0){
-            return "<font color=\"gray\">XXXX XXXX XXXX XXXX</font>";
+            return "<font color=\"gray\">1234 5678 9012 3456</font>";
         }
         String otext = "";
         for (int i = 0; i < text.length(); i++) {
