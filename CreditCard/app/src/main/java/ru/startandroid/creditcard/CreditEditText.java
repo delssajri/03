@@ -11,6 +11,7 @@ import android.widget.EditText;
  * Created by Tatiana on 15.01.2016.
  */
 public class CreditEditText extends EditText {
+    int fixedSelection = 0;
     public CreditEditText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
@@ -50,6 +51,29 @@ public class CreditEditText extends EditText {
         //outAttrs.imeOptions = EditorInfo.IME_ACTION_DONE;
 
         return baseInputConnection;
+    }
+    private int minPossibleSelection(int index) {
+        return Math.min(index, getText().toString().length());
+    }
+    public void setFixedSelection(int index) {
+        fixedSelection = minPossibleSelection(index);
+        super.setSelection(fixedSelection);
+    }
+    @Override
+    public void setSelection(int index) {
+        fixedSelection = minPossibleSelection(fixedSelection);
+        super.setSelection(fixedSelection);
+    }
+    @Override
+    public void setSelection(int start, int end) {
+        fixedSelection = minPossibleSelection(fixedSelection);
+        super.setSelection(fixedSelection);
+    }
+    @Override
+    protected void onSelectionChanged(int selStart, int selEnd) {
+        fixedSelection = minPossibleSelection(fixedSelection);
+        if (selStart != fixedSelection || selEnd != fixedSelection)
+            super.setSelection(fixedSelection);
     }
 }
 

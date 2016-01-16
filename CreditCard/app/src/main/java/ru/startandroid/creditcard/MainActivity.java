@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         eText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ( event.getAction() != KeyEvent.ACTION_UP && keyCode != 67) {
+                if ( event.getAction() != KeyEvent.ACTION_UP && keyCode != KeyEvent.KEYCODE_DEL) {
                     return true;
                 } else if(event.getUnicodeChar() ==
                         (int)EditableAccomodatingLatinIMETypeNullIssues.ONE_UNPROCESSED_CHARACTER.charAt(0))
@@ -122,10 +122,10 @@ public class MainActivity extends AppCompatActivity {
         UpdateButtons();
     }
     private  void UpdatePaymentView(){
-        EditText eText = (EditText)findViewById(R.id.eText);
+        CreditEditText eText = (CreditEditText)findViewById(R.id.eText);
         Spanned formattedString = Html.fromHtml(paymentForm.GetText());
         eText.setText(formattedString);
-        eText.setSelection(Math.min(paymentForm.GetCursorPos(), eText.getText().toString().length()));
+        eText.setFixedSelection(Math.min(paymentForm.GetCursorPos(), eText.getText().toString().length()));
 
         eText.setCompoundDrawablePadding(20);
         switch (paymentForm.GetCardIcon()){
