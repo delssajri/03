@@ -229,11 +229,13 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onClose(int code, String reason) {
-                    Button btnDone = (Button)findViewById(R.id.btnDone);
                     Log.d(TAG, "Connection lost.");
-                    UpdateButtons();
-                    ShowError("Server unavailable", "Couldn't establish connection with server. Check your network connections and retry");
-                    btnDone.setText("Retry");
+                    if ( ! paymentForm.GetPayment().GetConfirmed()) {
+                        Button btnDone = (Button) findViewById(R.id.btnDone);
+                        UpdateButtons();
+                        ShowError("Server unavailable", "Couldn't establish connection with server. Check your network connections and retry");
+                        btnDone.setText("Retry");
+                    }
                 }
             });
         } catch (WebSocketException e) {
