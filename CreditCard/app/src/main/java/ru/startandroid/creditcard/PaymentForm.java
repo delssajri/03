@@ -261,8 +261,7 @@ class DateView extends PaymentView {
         String number = super.GetPayment().GetNumber();
         String lastDigits = "<font color=\"gray\">XXXX</font>&nbsp;&nbsp;&nbsp;&nbsp;";
         ExpirationDate expirationDate = super.GetPayment().GetExpirationDate();
-        String month = "<font color=\"gray\">MM</font>";
-        String year = "<font color=\"gray\">/YY</font>";
+        String monthYear = "<font color=\"gray\">MM/YY</font>";
         String cvv = "<font color=\"gray\">CVV</font>";
         if (number.length() == 16){
             lastDigits = "<font color=\"black\">" + number.substring(12) + "</font>&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -270,16 +269,18 @@ class DateView extends PaymentView {
             lastDigits = "<font color=\"red\">" + PadWithSpaces(number.substring(12), 4) + "</font>&nbsp;&nbsp;&nbsp;&nbsp;";
         }
         if (expirationDate.GetMonth().length() > 0) {
-            month = "<font color=\"black\">" + expirationDate.GetMonth() + "</font>";
+            monthYear = "<font color=\"black\">" +
+                    PadWithSpaces(
+                            expirationDate.GetMonth() + "/" + expirationDate.GetYear(),
+                            5
+                    ) +
+                    "</font>";
         }
-        if (expirationDate.GetYear().length() > 0) {
-            year = "<font color=\"black\">/" + expirationDate.GetYear() + "</font>";
-        }
-        year += "&nbsp;&nbsp;&nbsp;&nbsp;";
+        monthYear += "&nbsp;&nbsp;&nbsp;&nbsp;";
         if (super.GetPayment().GetCvv().length() > 0) {
             cvv = "<font color=\"black\">" + super.GetPayment().GetCvv() + "</font>";
         }
-        return lastDigits + month + year + cvv;
+        return lastDigits + monthYear + cvv;
 
     }
     public void OnUserInput (String text, int pos) throws WrongPaymentException, IncompletePaymentException {
