@@ -161,7 +161,7 @@ class PaymentView {
     public void OnUserInput (String text, int pos) throws WrongPaymentException, IncompletePaymentException {
 
     }
-    public void OnDelete (int pos, int direction) throws WrongPaymentException, IncompletePaymentException {
+    public void OnDelete (int pos) throws WrongPaymentException, IncompletePaymentException {
 
     }
     public CardIcon GetCardIcon (){
@@ -217,18 +217,12 @@ class NumberView extends PaymentView {
         }
         super.GetPayment().SetNumber(updated_text);
     }
-    public void OnDelete (int pos, int direction) throws WrongPaymentException, IncompletePaymentException {
+    public void OnDelete (int pos) throws WrongPaymentException, IncompletePaymentException {
         String original_text = super.GetPayment().GetNumber();
-        if (0 == original_text.length()) {
+        if (0 == original_text.length() || pos >= 0) {
             return;
         }
-        int real_pos = 0;
-        for (int i = 0; i < original_text.length(); i++){
-            if (i > 0 && i % 5 != 0){
-                real_pos++;
-            }
-        }
-        String updated_text = original_text.substring(0, pos) + original_text.substring(pos + 1);
+        String updated_text = original_text.substring(0, original_text.length() - 1);
         super.GetPayment().SetNumber(updated_text);
     }
     public CardIcon GetCardIcon (){
@@ -295,8 +289,14 @@ class DateView extends PaymentView {
         }
         super.GetPayment().SetExpirationDate(updated_text);
     }
-    public void OnDelete (int pos, int direction) throws WrongPaymentException, IncompletePaymentException {
-
+    public void OnDelete (int pos) throws WrongPaymentException, IncompletePaymentException {
+        ExpirationDate expirationDate = super.GetPayment().GetExpirationDate();
+        String original_text = expirationDate.GetMonth() + expirationDate.GetYear();
+        if (0 == original_text.length() || pos >= 0) {
+            return;
+        }
+        String updated_text = original_text.substring(0, original_text.length() - 1);
+        super.GetPayment().SetExpirationDate(updated_text);
     }
     public CardIcon GetCardIcon (){
         CardType cardType = super.GetPayment().GetCardType();
@@ -355,8 +355,13 @@ class CvvView extends PaymentView {
         }
         super.GetPayment().SetCvv(updated_text);
     }
-    public void OnDelete (int pos, int direction) throws WrongPaymentException, IncompletePaymentException {
-
+    public void OnDelete (int pos) throws WrongPaymentException, IncompletePaymentException {
+        String original_text = super.GetPayment().GetCvv();
+        if (0 == original_text.length() || pos >= 0) {
+            return;
+        }
+        String updated_text = original_text.substring(0, original_text.length() - 1);
+        super.GetPayment().SetCvv(updated_text);
     }
     public CardIcon GetCardIcon (){
         return CardIcon.back;
@@ -395,8 +400,8 @@ public class PaymentForm {
         if ( currentView < 2)
             currentView += 1;
     }
-    public void OnDelete (int pos, int direction) throws WrongPaymentException, IncompletePaymentException {
-        views[currentView].OnDelete(pos, direction);
+    public void OnDelete (int pos) throws WrongPaymentException, IncompletePaymentException {
+        views[currentView].OnDelete(pos);
     }
     public CardIcon GetCardIcon (){
         return views[currentView].GetCardIcon();

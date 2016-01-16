@@ -67,55 +67,57 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
                 android.util.Log.v("CreditCard", Integer.toString(keyCode) + " " + Integer.toString(event.getAction()));
-                if((keyCode < KeyEvent.KEYCODE_0) || (keyCode > KeyEvent.KEYCODE_9)) {
-                    return true;
+                if((KeyEvent.KEYCODE_0 <= keyCode && keyCode <= KeyEvent.KEYCODE_9) || keyCode == KeyEvent.KEYCODE_DEL) {
+                    OnKeyPress(keyCode);
                 }
-                String s = "";
-                switch (keyCode) {
-                    case 7:
-                        s = "0";
-                        break;
-                    case 8:
-                        s = "1";
-                        break;
-                    case 9:
-                        s = "2";
-                        break;
-                    case 10:
-                        s = "3";
-                        break;
-                    case 11:
-                        s = "4";
-                        break;
-                    case 12:
-                        s = "5";
-                        break;
-                    case 13:
-                        s = "6";
-                        break;
-                    case 14:
-                        s = "7";
-                        break;
-                    case 15:
-                        s = "8";
-                        break;
-                    case 16:
-                        s = "9";
-                        break;
-                }
-                int currentCursorPos = eText.getSelectionStart();
-
-                try {
-                    paymentForm.OnUserInput(s, -1);
-                } catch (WrongPaymentException e) {
-                    eText.startAnimation(shake);
-                } catch (Exception e) {
-                }
-                UpdatePaymentView();
-                UpdateButtons();
                 return true;
             }
         });
+        UpdatePaymentView();
+        UpdateButtons();
+    }
+    private void OnKeyPress(int keyCode) {
+        EditText eText = (EditText)findViewById(R.id.eText);
+        try {
+            switch (keyCode) {
+                case 7:
+                    paymentForm.OnUserInput("0", -1);
+                    break;
+                case 8:
+                    paymentForm.OnUserInput("1", -1);
+                    break;
+                case 9:
+                    paymentForm.OnUserInput("2", -1);
+                    break;
+                case 10:
+                    paymentForm.OnUserInput("3", -1);
+                    break;
+                case 11:
+                    paymentForm.OnUserInput("4", -1);
+                    break;
+                case 12:
+                    paymentForm.OnUserInput("5", -1);
+                    break;
+                case 13:
+                    paymentForm.OnUserInput("6", -1);
+                    break;
+                case 14:
+                    paymentForm.OnUserInput("7", -1);
+                    break;
+                case 15:
+                    paymentForm.OnUserInput("8", -1);
+                    break;
+                case 16:
+                    paymentForm.OnUserInput("9", -1);
+                    break;
+                case KeyEvent.KEYCODE_DEL:
+                    paymentForm.OnDelete(-1);
+                    break;
+            }
+        } catch (WrongPaymentException e) {
+            eText.startAnimation(shake);
+        } catch (Exception e) {
+        }
         UpdatePaymentView();
         UpdateButtons();
     }
