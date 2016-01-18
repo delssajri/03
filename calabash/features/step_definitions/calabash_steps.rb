@@ -38,6 +38,19 @@ Then(/^I check button Done enabled$/) do
   check_element_exists("AppCompatButton id:'btnDone' enabled:'true'")
 end
 
+Then(/^I see icon unknown$/) do
+  check_element_exists("CreditEditText contentDescription:'unknown'")
+end
+
+Then(/^I see icon mastercardfront$/) do
+  check_element_exists("CreditEditText contentDescription:'mastercardfront'")
+end
+
+Then(/^I see icon visafront$/) do
+  check_element_exists("CreditEditText contentDescription:'visafront'")
+end
+
+
 
 
 
