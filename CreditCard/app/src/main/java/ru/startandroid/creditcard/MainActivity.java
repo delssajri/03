@@ -121,14 +121,18 @@ public class MainActivity extends AppCompatActivity {
         UpdatePaymentView();
         UpdateButtons();
     }
-    private  void UpdatePaymentView(){
+    private void UpdatePaymentView(){
         CreditEditText eText = (CreditEditText)findViewById(R.id.eText);
         Spanned formattedString = Html.fromHtml(paymentForm.GetText());
         eText.setText(formattedString);
         eText.setFixedSelection(Math.min(paymentForm.GetCursorPos(), eText.getText().toString().length()));
 
         eText.setCompoundDrawablePadding(20);
-        switch (paymentForm.GetCardIcon()){
+        SetCardIcon(paymentForm.GetCardIcon());
+    }
+    private void SetCardIcon(CardIcon cardIcon) {
+        CreditEditText eText = (CreditEditText)findViewById(R.id.eText);
+        switch (cardIcon){
             case visafront:
                 eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.visa, 0, 0, 0);
                 break;
@@ -141,8 +145,9 @@ public class MainActivity extends AppCompatActivity {
             default:
                 eText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.unknown, 0, 0, 0);
         }
+        eText.setContentDescription(cardIcon.toString());
     }
-    private  void UpdateButtons()
+    private void UpdateButtons()
     {
         Button btnPrev = (Button)findViewById(R.id.btnPrev);
         Button btnNext = (Button)findViewById(R.id.btnNext);
